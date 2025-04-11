@@ -18,10 +18,16 @@ apply_gray = st.sidebar.checkbox("Convert to Grayscale")
 apply_contrast = st.sidebar.checkbox("Contrast Stretching")
 apply_negative = st.sidebar.checkbox("Image Negative")
 apply_scale = st.sidebar.checkbox("Resize Image")
+apply_flip_horizontal = st.sidebar.checkbox("Flip Horizontally")
+apply_flip_vertical = st.sidebar.checkbox("Flip Vertically")
+apply_blur = st.sidebar.checkbox("Apply Blur")
 
 if apply_scale:
     fx = st.sidebar.slider("Scale X", 0.1, 2.0, 0.5)
     fy = st.sidebar.slider("Scale Y", 0.1, 2.0, 0.5)
+
+if apply_blur:
+    blur_ksize = st.sidebar.slider("Blur Intensity (Odd number)", 1, 51, 5, step=2)
 
 # --- Contrast Stretching Function ---
 def contrast_stretch(img):
@@ -64,6 +70,15 @@ if uploaded_file is not None:
     if apply_scale:
         transformed = cv2.resize(transformed, None, fx=fx, fy=fy, interpolation=cv2.INTER_LINEAR)
 
+    if apply_flip_horizontal:
+        transformed = cv2.flip(transformed, 1)
+
+    if apply_flip_vertical:
+        transformed = cv2.flip(transformed, 0)
+
+    if apply_blur:
+        transformed = cv2.GaussianBlur(transformed, (blur_ksize, blur_ksize), 0)
+
     # Display results
     col1, col2 = st.columns(2)
     with col1:
@@ -93,4 +108,3 @@ if uploaded_file is not None:
         )
 else:
     st.info("⬆️ Upload an image to get started.")
-
