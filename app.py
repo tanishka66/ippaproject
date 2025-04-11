@@ -92,3 +92,4 @@ if uploaded_file is not None:
         )
 else:
     st.info("⬆️ Upload an image to get started.")
+
