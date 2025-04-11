@@ -28,19 +28,20 @@ def contrast_stretch(img):
     if len(img.shape) == 2:  # Grayscale
         min_val = np.min(img)
         max_val = np.max(img)
-        if max_val - min_val == 0:
+        if max_val == min_val:
             return img.copy()
-        stretched = ((img - min_val) / (max_val - min_val) * 255).astype(np.uint8)
-        return stretched
+        stretched = np.clip((img - min_val) * (255.0 / (max_val - min_val)), 0, 255)
+        return stretched.astype(np.uint8)
     else:  # Color
         stretched = np.zeros_like(img)
         for i in range(3):
-            min_val = np.min(img[:, :, i])
-            max_val = np.max(img[:, :, i])
-            if max_val - min_val == 0:
-                stretched[:, :, i] = img[:, :, i]
+            channel = img[:, :, i]
+            min_val = np.min(channel)
+            max_val = np.max(channel)
+            if max_val == min_val:
+                stretched[:, :, i] = channel
             else:
-                stretched[:, :, i] = ((img[:, :, i] - min_val) / (max_val - min_val) * 255).astype(np.uint8)
+                stretched[:, :, i] = np.clip((channel - min_val) * (255.0 / (max_val - min_val)), 0, 255).astype(np.uint8)
         return stretched
 
 # --- Process Image ---
